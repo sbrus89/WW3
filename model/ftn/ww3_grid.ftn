@@ -647,6 +647,7 @@
 !/RTD      REAL                    :: bPolat, bPolon
 !/RTD!
       REAL, ALLOCATABLE       :: XGRDIN(:,:), YGRDIN(:,:)
+      REAL, ALLOCATABLE       :: XUGRDIN(:), YUGRDIN(:)
       REAL, ALLOCATABLE       :: ZBIN(:,:), OBSX(:,:), OBSY(:,:)
       REAL, ALLOCATABLE       :: REFD(:,:), REFD2(:,:), REFS(:,:)
 !/BT4      REAL, ALLOCATABLE  :: SED_D50FILE(:,:), SED_POROFILE(:,:)
@@ -2746,6 +2747,7 @@
 !/SMC          WRITE (NDSO,2953) CFLTM, DTIME, LATMIN, RFMAXD, UNO3, &
 !/SMC                      AVERG, LvSMC, NBISMC, ISHFT, JEQT, SEAWND 
 !/PR3          WRITE (NDSO,2953) CFLTM, WDTHCG, WDTHTH
+!/RTD          WRITE (NDSO,2954) PLON, PLAT, UNROT
 !
         WRITE (NDSO,2956) UGBCCFL, UGOBCAUTO, UGOBCDEPTH,TRIM(UGOBCFILE), &
                           EXPFSN, EXPFSPSI, EXPFSFCT, IMPFSN, EXPTOTAL,&
@@ -3534,10 +3536,20 @@
 !/RTD       ELSE
 !/RTD         ALLOCATE(StdLat(NX,NY), StdLon(NX,NY))
 !/RTD
-!/RTD !       Calculate rotation angles; (StdLon/Lat are returned, but not used)
-!/RTD !       The regular grid X/YGRDIN are used as equatorial lon and lat
+!/RTD !     Calculate rotation angles; (StdLon/Lat are returned, but not used)
+!/RTD !     The regular grid X/YGRDIN are used as equatorial lon and lat
+!/RTD       IF (GTYPE.NE.UNGTYPE) THEN
 !/RTD         CALL W3EQTOLL( YGRDIN, XGRDIN, StdLat, StdLon, AnglDin, &
-!/RTD                      PoLat, PoLon, NX*NY )
+!/RTD                        PoLat, PoLon, NX*NY )
+!/RTD       ELSE
+!/RTD         ALLOCATE(XUGRDIN(NX*NY),YUGRDIN(NX*NY))
+!/RTD         DO IX = 1,NX*NY
+!/RTD           XUGRDIN(IX) = XYB(IX,1)
+!/RTD           YUGRDIN(IX) = XYB(IX,2)
+!/RTD         ENDDO
+!/RTD         CALL W3EQTOLL(YUGRDIN, XUGRDIN, StdLat, StdLon, AnglDin, &
+!/RTD                        PoLat, PoLon, NX*NY )
+!/RTD       ENDIF
 !/RTD
 !/RTD !       Clean up
 !/RTD         DEALLOCATE( StdLat, StdLon )
@@ -5826,6 +5838,7 @@
 !/UOST              '    shadow calibration factor: ',F5.2)
 !/UOST 4502 FORMAT ('  &UOST UOSTFILELOCAL = ',A,', UOSTFILESHADOW = ',A,/ &
 !/UOST              '        UOSTFACTORLOCAL = ',F5.2', UOSTFACTORSHADOW = ',F5.2,' /')
+!/RTD  2954 FORMAT ('  &RTD PLON = ',F9.3,', PLAT = ',F9.3,', UNROT = ',L3,' /')
 !
   950 FORMAT (/'  Propagation scheme : '/                             &
                ' --------------------------------------------------')
