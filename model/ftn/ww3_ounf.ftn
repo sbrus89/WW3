@@ -942,6 +942,7 @@
       REAL,DIMENSION(:),  ALLOCATABLE    :: LON, LAT, FREQ
       REAL,DIMENSION(:,:),  ALLOCATABLE  :: LON2D, LAT2D, ANGLD2D
 !/RTD      REAL,DIMENSION(:,:),  ALLOCATABLE  :: LON2DEQ, LAT2DEQ
+!/RTD      REAL,DIMENSION(:),  ALLOCATABLE    :: LONEQ, LATEQ, ANGLED
       ! Make the below allocatable to avoid stack overflow on some machines 
       REAL, ALLOCATABLE       :: X1(:,:), X2(:,:), XX(:,:), XY(:,:),   &
                                  XK(:,:,:), XXK(:,:,:), XYK(:,:,:),    & 
@@ -2105,9 +2106,13 @@
                 ELSE ! SMCGRD
                   ! instanciates lon with x/lon for regular grid or nodes for unstructured mesh
                   IF (.NOT.ALLOCATED(LON)) ALLOCATE(LON(NX))
-!/RTD                  ! 2d longitude array for standard grid coordinates
-!/RTD                  IF ( RTDL .AND. .NOT.ALLOCATED(LON2D)) &
-!/RTD                    ALLOCATE(LON2D(NX,NY),LON2DEQ(NX,NY),ANGLD2D(NX,NY))
+!/RTD                  !! 2d longitude array for standard grid coordinates
+!/RTD                  !IF ( RTDL .AND. .NOT.ALLOCATED(LON2D)) &
+!/RTD                  !  ALLOCATE(LON2D(NX,NY),LON2DEQ(NX,NY),ANGLD2D(NX,NY))
+!/RTD                ! 2d longitude array for standard grid coordinates
+!/RTD                IF (GTYPE.EQ.RLGTYPE) THEN
+!/RTD                  IF (.NOT.ALLOCATED(LON2D)) ALLOCATE(LON2D(NX,NY),LON2DEQ(NX,NY),ANGLD2D(NX,NY))
+!/RTD                ENDIF
                   IF (.NOT.ALLOCATED(LAT)) THEN 
                     ! If regular grid, instanciates lat with y/lat
                     IF (GTYPE.EQ.RLGTYPE) THEN 
@@ -2217,8 +2222,18 @@
 
               ! If unstructured mesh
               IF (GTYPE.EQ.UNGTYPE) THEN 
-                LON(:)=XYB(:,1) 
-                LAT(:)=XYB(:,2)
+!/RTD           ALLOCATE(LONEQ(NX),LATEQ(NX),ANGLED(NX))
+!/RTD           LONEQ(:)=XYB(:,1) 
+!/RTD           LATEQ(:)=XYB(:,2)
+!/RTD           CALL W3EQTOLL(LATEQ, LONEQ, LAT, LON, &
+!/RTD                         ANGLED, POLAT, POLON, NX)                
+!/RTD      
+!/RTD           DO I = 1,NX
+!/RTD             IF (LON(I) > 180.0) THEN
+!/RTD               LON(I) = LON(I) - 360.0
+!/RTD             ENDIF
+!/RTD           ENDDO
+
                 IF (.NOT.ALLOCATED(TRIGP2)) ALLOCATE(TRIGP2(3,NTRI))
                 DIMLN(2)=NX
                 DIMLN(3)=NTRI
