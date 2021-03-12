@@ -615,7 +615,7 @@
 !/ ------------------------------------------------------------------- /
       USE CONSTANTS
       USE W3GDATMD, ONLY: NK, NTH, SIG, NX, NY, NSEA, NSEAL,          &
-                          MAPSTA, MAPFS
+                          MAPSTA, MAPFS, GTYPE, UNGTYPE
 !/RTD !!   Use spectral rotation sub and angle.  JGLi12Jun2012
 !/RTD      USE W3GDATMD, ONLY: NSPEC, AnglD, FLAGUNR 
 !/RTD      USE W3SERVMD, ONLY: W3ACTURN
@@ -653,6 +653,7 @@
                                  WNDX, WNDY, CURX, CURY, FAC1(NK),    &
                                  FAC2(NK), FAC3(NK), FAC4(NK)
       INTEGER                 :: JSEA, ISEA
+      INTEGER                 :: NND
 !/T      REAL                    :: SPTEST(NK,NTH)
 !/RTD      REAL :: Spectr(NSPEC), AnglDIS
 !/RTD      INTEGER :: IROT
@@ -687,7 +688,14 @@
         RDS    = 0.
         RDI    = 0.
 !
-        DO J=1, 4
+        IF (GTYPE .NE. UNGTYPE) THEN
+          NND = 4
+        ELSE
+          NND = 3
+        ENDIF
+
+
+        DO J=1, NND
           IS(J)  = MAPFS (IY(J),IX(J))
           IM(J)  = MAPSTA(IY(J),IX(J))
           IF ( IM(J).GT.0 ) THEN
