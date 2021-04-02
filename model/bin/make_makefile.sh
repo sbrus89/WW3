@@ -885,7 +885,7 @@
                core=
                data='w3wdatmd w3gdatmd w3adatmd w3idatmd w3odatmd wmmdatmd'
                prop=
-             source="w3parall w3triamd $stx $nlx $btx $is $uostmd"
+             source="w3parall w3triamd w3gridmd $stx $nlx $btx $is $uostmd"
                  IO='w3iogrmd'
                 aux="constants w3servmd w3arrymd w3dispmd w3gsrumd w3timemd w3nmlgridmd $pdlibyow $memcode"
                 if [ "$scrip" = 'SCRIP' ]
@@ -1400,6 +1400,7 @@
          'W3PARALL'     ) modtest=w3parall.o ;;
          'W3SMCOMD'     ) modtest=w3smcomd.o ;;
          'W3OUNFMETAMD' ) modtest=w3ounfmetamd.o ;;
+         'W3GRIDMD'     ) modtest=w3gridmd.o ;;
          *              ) modfound=no ;; 
       esac
 
