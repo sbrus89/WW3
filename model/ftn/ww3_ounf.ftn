@@ -2222,12 +2222,13 @@
 
               ! If unstructured mesh
               IF (GTYPE.EQ.UNGTYPE) THEN 
-!/RTD           ALLOCATE(LONEQ(NX),LATEQ(NX),ANGLED(NX))
+!/RTD           ALLOCATE(ANGLED(NX),LONEQ(NX),LATEQ(NX))
 !/RTD           LONEQ(:)=XYB(:,1) 
 !/RTD           LATEQ(:)=XYB(:,2)
 !/RTD           CALL W3EQTOLL(LATEQ, LONEQ, LAT, LON, &
 !/RTD                         ANGLED, POLAT, POLON, NX)                
 !/RTD      
+!/RTD           DEALLOCATE(ANGLED,LONEQ,LATEQ)
 !/RTD           DO I = 1,NX
 !/RTD             IF (LON(I) > 180.0) THEN
 !/RTD               LON(I) = LON(I) - 360.0
