@@ -715,7 +715,7 @@
 !/IC5  CHARACTER(LEN=4)        :: IC5MSTR(3) = (/' EFS', ' RP ', ' M2 '/)
 
       CHARACTER               :: COMSTR*1, PNAME*30, RFORM*16,        &
-                                 FROM*4, FNAME*60, TNAME*60, LINE*80, &
+                                 FROM*4, FNAME*160, TNAME*60, LINE*80, &
                                  STATUS*20,FNAME2*60, PNAME2*40
       CHARACTER(LEN=6)        :: YESXNO(2)
 !/FLX3      CHARACTER(LEN=18)       :: TYPEID
